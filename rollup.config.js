@@ -1,24 +1,27 @@
 import resolve from "rollup-plugin-node-resolve";
 import commonjs from "rollup-plugin-commonjs";
+import babel from "rollup-plugin-babel";
 import pkg from "./package.json";
 
 export default [
-  // browser-friendly UMD build
   {
     input: "src/index.js",
     output: {
-      name: "formatted-input",
-      file: pkg.browser,
+      name: "index",
+      file: pkg.main,
       format: "umd"
     },
-    plugins: [resolve(), commonjs()]
-  },
-  {
-    input: "src/index.js",
-    output: [
-      { file: pkg.main, format: "cjs" },
-      { file: pkg.module, format: "es" }
+    plugins: [
+      resolve(),
+      babel({
+        exclude: "node_modules/**",
+        presets: ["@babel/env", "@babel/preset-react"]
+      }),
+      commonjs()
     ],
-    plugins: [resolve(), commonjs()]
+    external: ["react", "prop-types"],
+    globals: {
+      react: "React"
+    }
   }
 ];

@@ -7,10 +7,8 @@ import {
   unformattedToFormattedIndex
 } from "./Utils";
 
-export const createFormat = (name, formats, formatChar) => {
+export const createFormat = (formats, formatChar) => {
   return {
-    name,
-    type: `formatter/${name.toUpperCase()}`,
     uniqueDelimeters: getUniqueFormatDelimeters(formats, formatChar),
     formats: formats,
     formatChar: formatChar
@@ -35,7 +33,7 @@ const FormattedInput = ({ value, formatter, onChange, props }) => {
     <div>
       <input
         ref={inputEl}
-        value={format(formatter)(value.rawValue)}
+        value={format(formatter)(value)}
         {...props}
         onKeyDown={event => {
           setState({
@@ -49,12 +47,12 @@ const FormattedInput = ({ value, formatter, onChange, props }) => {
           );
 
           const lengthDifference =
-            unformattedNewValue.length - value.rawValue.length;
+            unformattedNewValue.length - value.length;
 
           const rawIndex =
             formattedToUnformattedIndex(
               state.selectionStart,
-              value.rawValue,
+              value,
               formatter
             ) + lengthDifference;
 
